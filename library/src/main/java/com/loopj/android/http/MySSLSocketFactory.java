@@ -75,6 +75,14 @@ public class MySSLSocketFactory extends SSLSocketFactory {
             }
 
             public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                //to fix Google Play "apps containing an unsafe implementation of TrustManager"
+                //https://support.google.com/faqs/answer/6346016
+                //Answer from "http://stackoverflow.com/a/35576059"
+                try {
+                    chain[0].checkValidity();
+                } catch (Exception e) {
+                    throw new CertificateException("Certificate not valid or trusted.");
+                }
             }
 
             public X509Certificate[] getAcceptedIssuers() {
